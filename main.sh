@@ -6,7 +6,7 @@ read -p "search anime: " ani
 
 
 # Fetch the data from the API
-anime_data=$(curl -s http://localhost:3000/search?keyw=$ani | tr -d '[:space:]')
+anime_data=$(curl -s https://webdis-k4ax.onrender.com/search?keyw=$ani | tr -d '[:space:]')
 
 # Loop through the data as an array of objects
 
@@ -23,28 +23,37 @@ done
 
 read -p "choose an option: " opt
 
+renew ()
+{
+  echo "hello world"
+}
+
 arrind=$(($opt-1))
 animeid=$(echo $anime_data | jq ".[$arrind].animeId")
 
 anid=$(echo "$animeid" | tr -d '"')
 
-anidet=$(curl -s http://localhost:3000/anime-details/$anid | tr -d '[:space:]')
+anidet=$(curl -s https://webdis-k4ax.onrender.com/anime-details/$anid | tr -d '[:space:]')
 
 totepcol=$(echo "$anidet" | jq ".totalEpisodes")
 
 totep=$(echo $totepcol | tr -d '"')
 
-read -p "select between [1-$totep]" noep
+read -p "select between [1-$totep]: " noep
 
-echo $noep
+
 
 acep=$(($noep-1))
 
-anwat=$(curl -s http://localhost:3000/vidcdn/watch/$anid-episode-$noep | tr -d '[:space:]')
+anwat=$(curl -s https://webdis-k4ax.onrender.com/vidcdn/watch/$anid-episode-$noep | tr -d '[:space:]')
 
 linkmu=$(echo $anwat | jq -r ".sources[0].file")
 
-mpv --no-terminal "$linkmu"
+
+
+ mpv --no-terminal "$linkmu" & read -p "hello world" lol
+
+
 
 #ffmpeg -i "http://vidsrc.to/embed/movie/385687" -f rawvideo -pix_fmt yuv420p -vf fps=25 - | mpv
 
